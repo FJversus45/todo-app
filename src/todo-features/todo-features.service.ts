@@ -100,7 +100,7 @@ export class TodoFeaturesService {
     if (!userExists) {
       throw new NotFoundException('User not found');
     }
-    const todo = await this.prismaService.todo.update({
+    const todo = await this.prismaService.todo.updateMany({
       where: {
         myId: todoId,
         userId: userId,
