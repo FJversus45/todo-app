@@ -42,8 +42,8 @@ export class TodoFeaturesController {
   async updateTodo(@Req() req, @Body() dto: UpdateTodoDto) {
     const userId = req.user.id;
     return await this.todoFeaturesService.updateTodo(
-      dto.title || '',
-      dto.body || '',
+      dto.title,
+      dto.body,
       userId,
       dto.todoId,
     );

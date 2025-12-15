@@ -1,4 +1,3 @@
-
 import { IsNumber, IsString } from 'class-validator';
 
 export class TodoDto {
@@ -10,9 +9,9 @@ export class TodoDto {
 
 export class UpdateTodoDto {
   @IsString()
-  title?: string;
+  title: string;
   @IsString()
-  body?: string;
+  body: string;
   @IsNumber()
   todoId: number;
 }
