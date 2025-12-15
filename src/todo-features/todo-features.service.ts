@@ -16,15 +16,17 @@ export class TodoFeaturesService {
     if (!userExists) {
       throw new NotFoundException('User not found');
     }
-    const lastTodo = await this.prismaService.todo.findFirst({
-      where: {
-        id: userId,
-      },
-      orderBy: {
-        myId: 'desc',
-      },
+
+    const myId = await this.prismaService.$transaction(async (tx) => {
+      const lastTodo = await tx.todo.findFirst({
+        where: { userId },
+        orderBy: { myId: 'desc' },
+        select: { myId: true },
+      });
+
+      return (lastTodo?.myId ?? 0) + 1;
     });
-    const myId = (lastTodo?.myId ?? 0) + 1;
+
     const todo = await this.prismaService.todo.create({
       data: {
         title,
