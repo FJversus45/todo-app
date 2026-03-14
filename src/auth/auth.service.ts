@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -8,13 +9,36 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class AuthService {
   constructor(
+    // @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private prisma: PrismaService,
     private jwtService: JwtService,
   ) {}
+
+  async findUserById(id: string) {
+    const cacheKey = `user:${id}`;
+    // const cachedUser = await this.cacheManager.get(cacheKey);
+
+    // if (cachedUser) {
+    //   console.log('Cache hit! Returning cached user.');
+    //   return cachedUser;
+    // }
+    console.log('Cache miss. Fetching from database');
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+    });
+    if (user) {
+      console.log('We reached here');
+      // await this.cacheManager.set(cacheKey, user, 600);
+    }
+    return user;
+  }
+
   async register(
     firstName: string,
     lastName: string,
